@@ -231,7 +231,7 @@ services->graph-node->environment->ethereum: 'localhost:http://host.docker.inter
 sh start_eth_node.sh
 ```
 
-* 在启动docker中graph相关环境，注意新建终端
+* 在启动docker中graph相关环境，注意新建终端，首次会下载相关docker镜像，需要等服务启动起来后再执行下面的命令
 ```
 sh start_graph_node.sh
 ```
