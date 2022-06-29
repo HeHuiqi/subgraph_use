@@ -166,7 +166,7 @@ main()
   });
 ```
 ## 配置脚本命令
-执行部署后的package.json
+package.json
 ```
 {
     "name": "hardhat-project",
