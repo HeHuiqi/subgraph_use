@@ -1,0 +1,48 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: HqToken
+    network: localhost
+    source:
+      abi: HqToken
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - Transfer
+      abis:
+        - name: HqToken
+          file: ./abis/HqToken.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/hq-token.ts
+  - kind: ethereum
+    name: HqMarket
+    network: localhost
+    source:
+      abi: HqMarket
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - HqMarketApproval
+        - HqMarketTransfer
+      abis:
+        - name: HqMarket
+          file: ./abis/HqMarket.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleHqMarketApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleHqMarketTransfer
+      file: ./src/hq-market.ts
