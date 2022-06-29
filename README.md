@@ -31,9 +31,11 @@ module.exports = {
 
 
 安装subgraph依赖
+```
 npm install --save-dev @graphprotocol/graph-cli @graphprotocol/graph-ts
 
 npm install --save-dev git+https://github.com/graphprotocol/hardhat-graph/\#main
+```
 
 安装完成后修改`hardhat.config.js`文件，开始配置subgraph项目
 
