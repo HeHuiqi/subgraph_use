@@ -3,14 +3,6 @@
 
 
 
-if [ "$1" == "start" ]; then
-    echo "start"
-    # npm run start v3
-
-    # npm run graph-local-node-start 
-    exit;
-fi
-
 if [ "$1" == "clean" ]; then
     echo "clean"
     

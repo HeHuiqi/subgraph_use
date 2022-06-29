@@ -210,13 +210,20 @@ yarn deploy
         "deploy": "npx hardhat run scripts/sample-script.js",
         "test": "npx hardhat test",
         "graph-test": "graph test",
-        "graph-build": "cd ./subgraph && yarn codegen",
-        "graph-codegen": "cd ./subgraph && yarn build",
+        "graph-local-node-start": "cd ./docker && docker-compose up",
+        "graph-local-node-stop": "cd ./docker &&  docker-compose down -v && docker-compose rm -v && rm -rf data/ipfs data/postgres",
+        "graph-local-codegen": "cd ./subgraph && npm run codegen",
+        "graph-local-build": "cd ./subgraph && npm run build",
+        "create-local-subgraph-node": "cd ./subgraph &&  graph create --node http://127.0.0.1:8020 hhq/MySubgraph",
+        "deploy-local-subgraph-node": "cd ./subgraph && graph deploy --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 hhq/MySubgraph",
+        "remove-local-subgraph-node": "graph remove --node http://localhost:8020/ hhq/MySubgraph",
+        "hardhat-local": "hardhat node --hostname 0.0.0.0",
+        "graph-build": "cd ./subgraph && graph codegen",
+        "graph-codegen": "cd ./subgraph && graph build",
         "graph-local": "docker-compose up",
         "graph-local-clean": "docker-compose down -v && docker-compose rm -v && rm -rf data/ipfs data/postgres",
         "create-local": "graph create --node http://127.0.0.1:8020 hhq/MySubgraph",
-        "deploy-local": "cd ./subgraph && graph deploy --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 hhq/MySubgraph",
-        "hardhat-local": "hardhat node --hostname 0.0.0.0"
+        "deploy-local": "cd ./subgraph && graph deploy --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 hhq/MySubgraph"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.31.0",
@@ -236,9 +243,13 @@ yarn deploy
 
 克隆graph-node到本地并进入docker目录
 ```
+# 这里可省略，直接将graph-node项目的docker文目录复制到本地项目即可
 git clone https://github.com/graphprotocol/graph-node
+
 cd docker
 ```
+
+
 
 修改graph-node节点类型
 编辑`docker`目录下的 `docker-compose.yml` 文件，找到如下配置
@@ -254,38 +265,29 @@ services->graph-node->environment->ethereum: 'localhost:http://host.docker.inter
 这个节点名称也是你要测试子图 `subgraph.yaml` 清单文件 `dataSources->network` 的节点名称，需要保持一致
 
 
-启动graph-node，首先注意启动docker服务
-```
-# 启动docker配置的的容器
-docker-compose up
-```
-
 
 ## subgraph项目的编译和部署
 
+* 先启动eth节点
 ```
-# 生成代码
-npm run graph-codegen
-# 编译
-npm run graph-build
+sh start_eth_node.sh
+```
 
-# 创建节点
-npm run create-local
-# 部署节点，部署完成后将返回一个本地graphql查询地址
-nom run deploy-local
+* 在启动docker中graph相关环境，注意新建终端
+```
+sh start_graph_node.sh
+```
 
+* 创建和部署 subgraph node,注意新建终端
+```
+sh run.sh
+```
+
+* 清除
+```
+sh run.sh clean
 ```
 
 ## 测试
 http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph
-
-
-部署步骤
-
-先启动eth节点，
-在启动docker
-然后部署合约
-创建subgraph node
-部署subgraph node
-
 
