@@ -165,42 +165,8 @@ main()
     process.exit(1);
   });
 ```
-## 配置脚本命令，并启动localhost以太坊节点
-
-配置项目脚本命令package.json
-```
-{
-    "name": "hardhat-project",
-    "license": "GPL",
-    "scripts": {
-        "start": "npx hardhat node",
-        "deploy": "npx hardhat run scripts/sample-script.js",
-        "test": "npx hardhat test"
-    },
-    "devDependencies": {
-        "@graphprotocol/graph-cli": "^0.31.0",
-        "@graphprotocol/graph-ts": "^0.27.0",
-        "@nomiclabs/hardhat-ethers": "^2.0.6",
-        "@nomiclabs/hardhat-waffle": "^2.0.3",
-        "chai": "^4.3.6",
-        "ethereum-waffle": "^3.4.4",
-        "ethers": "^5.6.9",
-        "hardhat": "^2.9.9",
-        "hardhat-graph": "git+https://github.com/graphprotocol/hardhat-graph.git#main"
-    }
-}
-```
-启动本地eth节点
-```
-yarn start
-```
-部署合约项目并初始化subgraph项目,初始化subgraph项目会自动增加一些脚本命令
-```
-yarn deploy
-
-```
-
-执行部署后的package.json，这里自己做了修改
+## 配置脚本命令
+执行部署后的package.json
 ```
 {
     "name": "hardhat-project",
@@ -209,21 +175,13 @@ yarn deploy
         "start": "npx hardhat node",
         "deploy": "npx hardhat run scripts/sample-script.js",
         "test": "npx hardhat test",
-        "graph-test": "graph test",
         "graph-local-node-start": "cd ./docker && docker-compose up",
         "graph-local-node-stop": "cd ./docker &&  docker-compose down -v && docker-compose rm -v && rm -rf data/ipfs data/postgres",
         "graph-local-codegen": "cd ./subgraph && npm run codegen",
         "graph-local-build": "cd ./subgraph && npm run build",
-        "create-local-subgraph-node": "cd ./subgraph &&  graph create --node http://127.0.0.1:8020 hhq/MySubgraph",
-        "deploy-local-subgraph-node": "cd ./subgraph && graph deploy --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 hhq/MySubgraph",
-        "remove-local-subgraph-node": "graph remove --node http://localhost:8020/ hhq/MySubgraph",
-        "hardhat-local": "hardhat node --hostname 0.0.0.0",
-        "graph-build": "cd ./subgraph && graph codegen",
-        "graph-codegen": "cd ./subgraph && graph build",
-        "graph-local": "docker-compose up",
-        "graph-local-clean": "docker-compose down -v && docker-compose rm -v && rm -rf data/ipfs data/postgres",
-        "create-local": "graph create --node http://127.0.0.1:8020 hhq/MySubgraph",
-        "deploy-local": "cd ./subgraph && graph deploy --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 hhq/MySubgraph"
+        "create-local-subgraph-node": "cd ./subgraph &&  npm run create-local",
+        "deploy-local-subgraph-node": "cd ./subgraph && npm run deploy-local",
+        "remove-local-subgraph-node": "cd ./subgraph && npm run remove-local",
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.31.0",
