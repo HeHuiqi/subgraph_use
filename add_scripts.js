@@ -1,5 +1,4 @@
 const package = require("./package.json")
-console.log(package);
 package.scripts = {
     "start": "npx hardhat node",
     "deploy": "npx hardhat run scripts/sample-script.js",
@@ -14,3 +13,4 @@ package.scripts = {
 }
 const fs = require("fs")
 fs.writeFileSync("package.json",JSON.stringify(package));
+console.log(package);
