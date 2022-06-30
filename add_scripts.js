@@ -1,8 +1,8 @@
 const package = require("./package.json")
 package.scripts = {
     "start": "npx hardhat node",
-    "deploy": "npx hardhat run scripts/sample-script.js",
-    "test": "npx hardhat test",
+    "deploy": "npx hardhat run scripts/hqtoken-script.js",
+    "test": "npx hardhat test --network hardhat",
     "graph-local-node-start": "cd ./docker && docker-compose up",
     "graph-local-node-stop": "cd ./docker &&  docker-compose down -v && docker-compose rm -v && rm -rf data/ipfs data/postgres",
     "graph-local-codegen": "cd ./subgraph && npm run codegen",
