@@ -11,6 +11,17 @@ package.scripts = {
     "deploy-local-subgraph-node": "cd ./subgraph && npm run deploy-local",
     "remove-local-subgraph-node": "cd ./subgraph && npm run remove-local",
 }
+package.devDependencies = {
+    "@graphprotocol/graph-cli": "^0.31.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.4",
+    "ethers": "^5.6.9",
+    "hardhat": "^2.9.9",
+    "hardhat-graph": "git+https://github.com/graphprotocol/hardhat-graph.git#main"
+};
 const fs = require("fs")
 fs.writeFileSync("package.json",JSON.stringify(package));
 console.log(package);
