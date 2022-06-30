@@ -10,7 +10,7 @@ describe("HqMarket", function () {
     const [main,other] = await ethers.getSigners();
   
     const HqMarket = await ethers.getContractFactory("HqMarket");
-    const hqMarket = await hqMarket.deploy("hqMarket",'HQT',18);
+    const hqMarket = await HqMarket.deploy();
     await hqMarket.deployed();
     console.log("HqMarket:",hqMarket.address);
     
