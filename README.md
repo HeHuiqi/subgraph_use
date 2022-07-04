@@ -32,9 +32,13 @@ module.exports = {
 
 安装subgraph依赖
 ```
+# subgraph 命令行工具以及对应的ts库
 npm install --save-dev @graphprotocol/graph-cli @graphprotocol/graph-ts
 
+# 生成 subgraph scaffold
 npm install --save-dev git+https://github.com/graphprotocol/hardhat-graph/\#main
+# subgraph unit test
+npm install --save-dev matchstick-as
 ```
 
 安装完成后修改`hardhat.config.js`文件，开始配置subgraph项目
@@ -195,6 +199,7 @@ package.json
         "ethers": "^5.6.9",
         "hardhat": "^2.9.9",
         "hardhat-graph": "git+https://github.com/graphprotocol/hardhat-graph.git#main"
+        "matchstick-as": "^0.5.0"
     }
 }
 ```
@@ -230,24 +235,129 @@ services->graph-node->environment->ethereum: 'localhost:http://host.docker.inter
 
 * 先启动eth节点
 ```
-sh start_eth_node.sh
+npm run start 
 ```
 
 * 在启动docker中graph相关环境，注意新建终端，首次会下载相关docker镜像，需要等服务启动起来后再执行下面的命令
 ```
-sh start_graph_node.sh
+npm run graph-local-node-start
 ```
 
 * 创建和部署 subgraph node,注意新建终端
 ```
-sh run.sh
+npm run deploy
+npm run graph-local-codegen && npm run graph-local-build
+npm run create-local-subgraph-node && npm run deploy-local-subgraph-node
 ```
 
-* 清除
+* 清除节点并删除数据
 ```
-sh run.sh clean
+npm run remove-local-subgraph-node
+npm run graph-local-node-stop
+
 ```
 
 ## 测试
 http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph
+
+
+## subgraph项目的单元测试的准备与测试
+
+首先注意安装 `npm install -D matchstick-as` 单元测试框架依赖
+
+在 subgraph项目下创建`tests`文件夹,并在其中创建 `hq-token.test.ts` 测试文件内容如下
+
+```
+import { describe, test, newMockEvent, assert, clearStore } from "matchstick-as/assembly/index";
+import { Bytes, ethereum, BigInt, Address,log } from "@graphprotocol/graph-ts";
+import { Transfer as TransferEvent } from "../generated/HqToken/HqToken";
+import { handleTransfer } from "../src/hq-token";
+import { Transfer } from "../generated/schema"
+
+function newParamms():ethereum.EventParam[]{
+
+
+    const fadr = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+    const tadr = '0x9a705eEda44f392691eBAE3EF1801c754dEf260d';
+    const from = Address.fromString(fadr);
+    const to = Address.fromString(tadr);
+    const value = BigInt.fromString('2000000000000000000000');
+
+    let params:ethereum.EventParam[] = [];
+    let fromP = new ethereum.EventParam("from", ethereum.Value.fromAddress(from));
+    let toP = new ethereum.EventParam("to", ethereum.Value.fromAddress(to));
+    let valueP = new ethereum.EventParam("value", ethereum.Value.fromUnsignedBigInt(value));
+
+    params.push(fromP);
+    params.push(toP);
+    params.push(valueP);
+    return params;
+}
+
+describe("handleTransfer()", () => {
+
+    test("Tranfser use newMockEvent() ",()=>{
+        const fadr = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+        const tadr = '0x9a705eEda44f392691eBAE3EF1801c754dEf260d';
+        const value = '2000000000000000000000';
+
+        // 使用mockEvent快速创建对象
+        // changetype<>()  AssemblyScript 默认类型转换函数
+        let tEvent = changetype<TransferEvent>(newMockEvent())
+        tEvent.parameters = newParamms();
+        handleTransfer(tEvent);
+
+        const transferId = tEvent.transaction.hash.toHexString() + '-' + tEvent.logIndex.toString();
+
+        // log.info(transferId,[])
+
+        assert.fieldEquals('Transfer', transferId.toLowerCase() , 'id', transferId.toLowerCase())
+        assert.fieldEquals('Transfer',transferId,'from',fadr.toLowerCase());
+        assert.fieldEquals('Transfer',transferId,'to',tadr.toLowerCase());
+        assert.fieldEquals('Transfer',transferId,'value',value);
+
+
+        clearStore();
+    });
+})
+
+```
+
+## 下载测试 `matchstick` 框架 准备运行单元测试, 已经编译好只有MacOS和Linux平台
+https://github.com/LimeChain/matchstick/releases
+
+MacOS 平台
+```
+#下载到项目根目录
+curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-macos-11 > > binary-macos-11
+sudo chmod u+x binary-macos-11
+# 运行单元测试 binary-macos-11
+```
+Linux平台
+```
+curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-linux-18 > binary-linux-18
+sudo chmod u+x binary-linux-18
+# 运行单元测试
+./binary-linux-18
+```
+
+
+## 直接执行测试
+```
+npm run graph-test
+```
+执行上面的命令 `graph-cli` 会自动下载对应平台的命令行测试工具，具体会下载到目录
+`node_modules/binary-install-raw/bin/0.5.1`
+根据平台的不同对应的下载名称也不同，等待下载完成自动执行单元测试，经测试发现不如下载完后放在项目根目自动执行效果更好，
+如果自动下载失败，也可手动下载后放入对应目录，再执行测试即可。
+
+
+一行命令构建整个项目
+```
+# 代理替换为自己的或者去掉，此脚本适用于MacOS和Linux
+sh -c "$(curl --proxy http://127.0.0.1:4780 https://raw.githubusercontent.com/HeHuiqi/project_scaffold_shell/main/subgraph_scaffold.sh)" -p hello --proxy http://127.0.0.1:4780
+
+```
+
+
 

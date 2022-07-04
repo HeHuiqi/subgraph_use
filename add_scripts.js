@@ -20,7 +20,8 @@ package.devDependencies = {
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.6.9",
     "hardhat": "^2.9.9",
-    "hardhat-graph": "git+https://github.com/graphprotocol/hardhat-graph.git#main"
+    "hardhat-graph": "git+https://github.com/graphprotocol/hardhat-graph.git#main",
+    "matchstick-as": "^0.5.0"
 };
 const fs = require("fs")
 fs.writeFileSync("package.json",JSON.stringify(package));
