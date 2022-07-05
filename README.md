@@ -330,6 +330,7 @@ https://github.com/LimeChain/matchstick/releases
 
 MacOS 平台
 ```bash
+brew install postgresql
 #下载到项目根目录
 curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-macos-11 >  binary-macos-11
 sudo chmod u+x binary-macos-11
@@ -337,6 +338,7 @@ sudo chmod u+x binary-macos-11
 ```
 Linux平台
 ```bash
+sudo apt install postgresql
 curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-linux-18 > binary-linux-18
 sudo chmod u+x binary-linux-18
 # 运行单元测试
