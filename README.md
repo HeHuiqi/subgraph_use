@@ -1,12 +1,14 @@
 
+[TOC]
 
 ## 创建hardhat项目基础项目
-```
+```bash
 npx hardhat
 Chose: Create a basic sample project
 ```
+
 基础项目依赖如下：
-```
+```json
 # package.json
 {
   "name": "hardhat-project",
@@ -22,7 +24,7 @@ Chose: Create a basic sample project
 
 ```
 基础项目配置如下
-```
+```javascript
 require("@nomiclabs/hardhat-waffle");
 module.exports = {
   solidity: "0.8.4",
@@ -31,7 +33,7 @@ module.exports = {
 
 
 安装subgraph依赖
-```
+```bash
 # subgraph 命令行工具以及对应的ts库
 npm install --save-dev @graphprotocol/graph-cli @graphprotocol/graph-ts
 
@@ -44,7 +46,7 @@ npm install --save-dev matchstick-as
 安装完成后修改`hardhat.config.js`文件，开始配置subgraph项目
 
 
-```
+```javascript
 require("@nomiclabs/hardhat-waffle");
 
 // 这里一定要引入，是为了引入 hardhat-graph 定义的 hardhat 一些 task ，就是来创建和初始化subgraph项目的
@@ -77,7 +79,7 @@ module.exports = {
 ```
 
 ## 修改示例合约为一个ERC20的标准合约 HqToken.sol
-```
+```javascript
 
 // SPDX-License-Identifier: GPL-3.0
 
@@ -151,7 +153,7 @@ contract HqToken {
 
 修改部署项目 scripts/sample-script.js 如下
 
-```
+```javascript
 async function main() {
 
   const HqToken = await hre.ethers.getContractFactory("HqToken");
@@ -173,7 +175,7 @@ main()
 ```
 ## 配置脚本命令
 package.json
-```
+```json
 {
     "name": "hardhat-project",
     "license": "GPL",
@@ -207,7 +209,7 @@ package.json
 ## graph-node 节点相关环境的配置修改和启动
 
 克隆graph-node到本地并进入docker目录
-```
+```bash
 # 这里可省略，直接将graph-node项目的docker文目录复制到本地项目即可
 git clone https://github.com/graphprotocol/graph-node
 
@@ -218,11 +220,11 @@ cd docker
 
 修改graph-node节点类型
 编辑`docker`目录下的 `docker-compose.yml` 文件，找到如下配置
-```
+```yaml
 services->graph-node->environment->ethereum: 'mainnet:http://host.docker.internal:8545'
-``` 
-修改如下，
 ```
+修改如下，
+```yaml
 services->graph-node->environment->ethereum: 'localhost:http://host.docker.internal:8545'
 ```
 
@@ -234,31 +236,31 @@ services->graph-node->environment->ethereum: 'localhost:http://host.docker.inter
 ## subgraph项目的编译和部署
 
 * 先启动eth节点
-```
+```bash
 npm run start 
 ```
 
 * 在启动docker中graph相关环境，注意新建终端，首次会下载相关docker镜像，需要等服务启动起来后再执行下面的命令
-```
+```bash
 npm run graph-local-node-start
 ```
 
 * 创建和部署 subgraph node,注意新建终端
-```
+```bash
 npm run deploy
 npm run graph-local-codegen && npm run graph-local-build
 npm run create-local-subgraph-node && npm run deploy-local-subgraph-node
 ```
 
 * 清除节点并删除数据
-```
+```bash
 npm run remove-local-subgraph-node
 npm run graph-local-node-stop
 
 ```
 
 ## 测试
-http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph
+[http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph](http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph)
 
 
 ## subgraph项目的单元测试的准备与测试
@@ -267,7 +269,7 @@ http://127.0.0.1:8000/subgraphs/name/hhq/MySubgraph
 
 在 subgraph项目下创建`tests`文件夹,并在其中创建 `hq-token.test.ts` 测试文件内容如下
 
-```
+```typescript
 import { describe, test, newMockEvent, assert, clearStore } from "matchstick-as/assembly/index";
 import { Bytes, ethereum, BigInt, Address,log } from "@graphprotocol/graph-ts";
 import { Transfer as TransferEvent } from "../generated/HqToken/HqToken";
@@ -327,14 +329,14 @@ describe("handleTransfer()", () => {
 https://github.com/LimeChain/matchstick/releases
 
 MacOS 平台
-```
+```bash
 #下载到项目根目录
-curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-macos-11 > > binary-macos-11
+curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-macos-11 >  binary-macos-11
 sudo chmod u+x binary-macos-11
 # 运行单元测试 binary-macos-11
 ```
 Linux平台
-```
+```bash
 curl https://github.com/LimeChain/matchstick/releases/download/0.5.1/binary-linux-18 > binary-linux-18
 sudo chmod u+x binary-linux-18
 # 运行单元测试
@@ -343,7 +345,7 @@ sudo chmod u+x binary-linux-18
 
 
 ## 直接执行测试
-```
+```bash
 npm run graph-test
 ```
 执行上面的命令 `graph-cli` 会自动下载对应平台的命令行测试工具，具体会下载到目录
@@ -353,11 +355,12 @@ npm run graph-test
 
 
 一行命令构建整个项目
-```
+```bash
 # 代理替换为自己的或者去掉，此脚本适用于MacOS和Linux
 sh -c "$(curl --proxy http://127.0.0.1:4780 https://raw.githubusercontent.com/HeHuiqi/project_scaffold_shell/main/subgraph_scaffold.sh)" -p hello --proxy http://127.0.0.1:4780
 
 ```
-
+## Demo
+[https://github.com/HeHuiqi/hello_subgraph](https://github.com/HeHuiqi/hello_subgraph)
 
 
